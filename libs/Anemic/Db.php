@@ -4,12 +4,20 @@ declare(strict_types=1);
 
 namespace Anemic {
 
+    use ErrorException;
     use Exception;
     use SQLite3;
     use SQLite3Result;
 
     class Db
     {
+        static ErrorException $last_error;
+
+        static function GetLastError(): ErrorException
+        {
+            return static::$last_error;
+        }
+
         static function RunInTx(callable $fn, string $dbname = ""): bool
         {
             if (empty($dbname)) {
@@ -31,7 +39,7 @@ namespace Anemic {
                 $db->exec("BEGIN TRANSACTION");
 
                 $cancel = $fn($db);
-                if (! $cancel) {
+                if ($cancel === false) {
                     throw new Exception();
                 }
 
@@ -41,6 +49,7 @@ namespace Anemic {
                 $db->exec("ROLLBACK TRANSACTION");
                 $db->close();
 
+                static::$last_error = $e;
                 return false;
             }
 
@@ -69,6 +78,7 @@ namespace Anemic {
 
             $sql = "INSERT INTO {$table} ({$tmp_fields}) VALUES ({$tmp_params});";
 
+            var_dump($sql);
             $stmt = $db->prepare($sql);
             if ($stmt === false) {
                 return false;

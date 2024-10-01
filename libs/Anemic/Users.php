@@ -3,55 +3,46 @@
 declare(strict_types=1);
 
 namespace Anemic {
+
+    use SQLite3;
+
     class Users
     {
-        static function GetId(string $email): int
+        static function GetId(SQLite3 $db, string $email): int
         {
-            $id = -1;
+            $rs = Db::Select($db, "users", ["id"], ["email" => $email]);
 
-            Db::RunInTx(function ($db) use ($email, &$id) {
-                $rs = Db::Select($db, "users", ["id"], ["email" => $email]);
+            if ($rs !== false) {
+                return $rs[0]["id"];
+            }
 
-                if ($rs !== false) {
-                    $id = $rs[0]["id"];
-                }
-            }, Config::Get("auth_database"));
-
-            return $id;
+            return -1;
         }
 
-        static function Add(string $email, string $password, string $firstname, string $lastname): bool
+        static function Add(SQLite3 $db, string $email, string $password, string $firstname, string $lastname): bool
         {
-            return Db::RunInTx(function ($db) use ($email, $password, $firstname, $lastname) {
-                Db::Insert($db, "users", [
-                    "email" => $email,
-                    "fistname" => $firstname,
-                    "lastname" => $lastname,
-                    "password_hash" => password_hash($password, PASSWORD_DEFAULT)
-                ]);
-            }, Config::Get("auth_database"));
+            return Db::Insert($db, "users", [
+                "email" => $email,
+                "firstname" => $firstname,
+                "lastname" => $lastname,
+                "password_hash" => password_hash($password, PASSWORD_DEFAULT)
+            ]);
         }
 
-        static function Update(string $email, string $password, string $firstname, string $lastname): bool
+        static function Update(SQLite3 $db, string $email, string $password, string $firstname, string $lastname): bool
         {
-            return Db::RunInTx(function ($db) use ($email, $password, $firstname, $lastname) {
-                Db::Update($db, "users", [
-                    "fistname" => $firstname,
-                    "lastname" => $lastname,
-                    "password_hash" => password_hash($password, PASSWORD_DEFAULT)
-                ], [
-                    "email" => $email,
-                ]);
-            }, Config::Get("auth_database"));
+            return Db::Update($db, "users", [
+                "firstname" => $firstname,
+                "lastname" => $lastname,
+                "password_hash" => password_hash($password, PASSWORD_DEFAULT)
+            ], [
+                "email" => $email,
+            ]);
         }
 
-        static function Delete(string $email): bool
+        static function Delete(SQLite3 $db, string $email): bool
         {
-            return Db::RunInTx(function ($db) use ($email) {
-                Db::Delete($db, "users", [
-                    "email" => $email,
-                ]);
-            }, Config::Get("auth_database"));
+            return Db::Delete($db, "users", ["email" => $email]);
         }
 
         static function Login(string $email, string $password): bool
