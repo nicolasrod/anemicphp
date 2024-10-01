@@ -12,7 +12,8 @@ $ php -S 0.0.0.0:8000
 - Go to the homepage: `http://0.0.0.0:8000`
 - Click on Login. Now you can log as:
 
-|Username | Password |
+| Username | Password |
+| -------- | -------- |
 |admin@local.host | admin1234 |
 |user@local.host| user1234 |
 
