@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// TODO: Implement mb_strrchr and mb_strrichr
+// TODO: Implement mb_strripos and mb_strrpos
+
 namespace Anemic {
   class Str
   {
@@ -121,14 +124,3 @@ namespace Anemic {
     }
   }
 }
-
-// TODO: Implement mb_strrchr and mb_strrichr
-// TODO: Implement mb_strripos and mb_strrpos
-
-/*
-60     Method Anemic\Str::ToArray() return type has no value type specified in iterable type array.  
-         💡 See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type     
-  62     Parameter #2 $length of function mb_str_split expects int<1, max>, int given.                 
-  110    Method Anemic\Str::GetTo() should return string but returns string|false.                     
-  115    Method Anemic\Str::GetFrom() should return string but returns string|false.             
-*/
