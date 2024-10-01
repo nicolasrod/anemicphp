@@ -32,7 +32,7 @@ namespace Anemic {
          */
         static function IsPOST(): bool
         {
-            return strtoupper($_SERVER['REQUEST_METHOD']) === 'POST';
+            return Str::ToUpper($_SERVER['REQUEST_METHOD']) === 'POST';
         }
 
         /**
@@ -43,9 +43,9 @@ namespace Anemic {
          */
         static function CheckValidMethod(array $methods): void
         {
-            $methods = array_map(fn($it) => strtoupper($it), $methods);
+            $methods = array_map(fn($it) => Str::ToUpper($it), $methods);
 
-            if (array_search(strtoupper($_SERVER['REQUEST_METHOD']), $methods) === false) {
+            if (array_search(Str::ToUpper($_SERVER['REQUEST_METHOD']), $methods) === false) {
                 die("Invalid HTTP Method");
             }
         }
@@ -57,7 +57,7 @@ namespace Anemic {
          */
         static function IsGET(): bool
         {
-            return strtoupper($_SERVER['REQUEST_METHOD']) === 'GET';
+            return Str::ToUpper($_SERVER['REQUEST_METHOD']) === 'GET';
         }
 
         /**

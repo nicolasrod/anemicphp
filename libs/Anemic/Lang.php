@@ -23,7 +23,7 @@ namespace Anemic {
                 return 'en';
             }
 
-            $t = strtolower($lang);
+            $t = Str::ToLower($lang);
             return in_array($t, static::$acceptedLangs) ? $t : 'en';
         }
 
@@ -60,7 +60,7 @@ namespace Anemic {
             $lang = Lang::Valid($lang);
             $uri = explode("/", $_SERVER['REQUEST_URI']);
             $page = end($uri);
-            return explode(".", $page)[0] . ".php?" . static::$varname . "={$lang}";
+            return explode(".", $page)[0] . ".php?" . urlencode(static::$varname) . "={$lang}";
         }
     }
 }

@@ -38,8 +38,8 @@ $server_folder = Anemic\Config::Get("server_folder");
 $uri = ($_SERVER['REQUEST_URI'] ?? '');
 
 if (! empty($uri)) {
-    if (substr($uri, 0, strlen($server_folder)) === $server_folder) {
-        $uri = substr($uri, strlen($server_folder));
+    if (Anemic\Str::HasPrefix($uri, $server_folder)) {
+        $uri = Anemic\Str::RemovePrefix($uri, $server_folder);
     }
 }
 

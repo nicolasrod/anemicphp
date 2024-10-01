@@ -161,7 +161,7 @@ namespace Anemic {
          */
         static function _renderFile(string $fname): string
         {
-            $tpl = str_replace(".", DIRECTORY_SEPARATOR, $fname);
+            $tpl = Str::Replace(".", DIRECTORY_SEPARATOR, $fname);
             $path = static::$basepath . DIRECTORY_SEPARATOR . $tpl . ".tpl";
 
             assert(file_exists($path));
@@ -212,11 +212,9 @@ namespace Anemic {
 
             if (! empty(static::$layout)) {
                 echo static::_renderFile(static::$layout);
-                $_SESSION["flashmsg"] = "";
                 return;
             }
 
-            $_SESSION["flashmsg"] = "";
             echo $out;
         }
 
@@ -233,6 +231,7 @@ namespace Anemic {
         }
 
 
+        // TODO: make an array of flash messages instead of only one
         static function FlashMsg(string $msg, bool $success = true): void
         {
             $_SESSION["flashmsg"] = [
@@ -243,7 +242,10 @@ namespace Anemic {
 
         static function GetFlasgMsg(): mixed
         {
-            return $_SESSION["flashmsg"] ?? "";
+            $msg = $_SESSION["flashmsg"] ?? [];
+            unset($_SESSION["flashmsg"]);
+
+            return $msg;
         }
     }
 }
