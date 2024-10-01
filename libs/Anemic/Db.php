@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Anemic {
 
-    use ErrorException;
     use Exception;
     use SQLite3;
     use SQLite3Result;

@@ -2,31 +2,29 @@
 
 declare(strict_types=1);
 
-use Anemic\FlashType;
+use Anemic\{Page, Validate, Users, View};
 
-Anemic\Page::CheckValidMethod(["POST", "GET"]);
+Page::CheckValidMethod(["POST", "GET"]);
 
-if (! Anemic\Page::IsPOST()) {
-    Anemic\View::Render("users.login", []);
+if (! Page::IsPOST()) {
+    View::Render("users.login", []);
     return;
 }
 
-$errors = Anemic\Validate::Check($_POST, [
+// Validate POST fields
+$errors = Validate::Check($_POST, [
     "email" => 'required | email | encode',
-    "password" => "required | alphanumeric | range: 12,255"
+    "password" => "required | alphanumeric | range: 8,255"
 ]);
 
-if (! empty($errors)) {
-    Anemic\View::FlashMsg(join("<br/>", array_values($errors)), false);
-    Anemic\Page::RedirectToSelf();
-}
+Validate::RedirectOnError($errors);
 
 $email = $_POST["email"];
 $password = $_POST["password"];
 
-if (! Anemic\Users::Login($email, $password)) {
-    Anemic\Page::ErrorUnauthorized();
+if (! Users::Login($email, $password)) {
+    Page::ErrorUnauthorized();
 }
 
-Anemic\View::FlashMsg("Login correct!", true);
-Anemic\Page::Redirect(Anemic\Config::Get("initial_path", "/"));
+View::FlashMsgGood("Login correct!");
+Page::Redirect(Anemic\Config::Get("initial_path", "/"));

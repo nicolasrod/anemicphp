@@ -42,7 +42,7 @@
     
     <?php $error = View::GetFlasgMsg() ?>
     <?php if (!empty($error)): ?>
-      <div class="alert alert-<?= $error["type"] ?>" role="alert">
+      <div class="alert alert-<?= $error['type'] ?>" role="alert">
         <?= $error["msg"] ?>
       </div>
     <?php endif; ?>

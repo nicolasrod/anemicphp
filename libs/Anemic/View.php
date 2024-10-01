@@ -230,22 +230,32 @@ namespace Anemic {
             static::$basepath = $name;
         }
 
-
-        // TODO: make an array of flash messages instead of only one
-        static function FlashMsg(string $msg, bool $success = true): void
+        static function FlashData(string $key, mixed $v): void
         {
-            $_SESSION["flashmsg"] = [
-                "msg" => $msg,
-                "type" => ($success ? "success" : "danger")
-            ];
+            $_SESSION[$key] = $v;
         }
 
-        static function GetFlasgMsg(): mixed
+        static function FlashMsgError(string $msg): void
         {
-            $msg = $_SESSION["flashmsg"] ?? [];
-            unset($_SESSION["flashmsg"]);
+            $_SESSION["flashmsg"] = ["msg" => $msg, "type" => "danger"];
+        }
 
-            return $msg;
+        static function FlashMsgGood(string $msg): void
+        {
+            $_SESSION["flashmsg"] = ["msg" => $msg, "type" => "success"];
+        }
+
+        static function GetFlasgMsg(): array
+        {
+            return static::GetFlasgData("flashmsg", []);
+        }
+
+        static function GetFlasgData(string $key, mixed $def = []): mixed
+        {
+            $data = $_SESSION[$key] ?? $def;
+            unset($_SESSION[$key]);
+
+            return $data;
         }
     }
 }

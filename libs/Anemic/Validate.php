@@ -5,6 +5,18 @@ declare(strict_types=1);
 namespace Anemic {
     class Validate
     {
+
+        /**
+         * @param array<string, string> $errors
+         */
+        static function RedirectOnError(array $errors): void
+        {
+            if (! empty($errors)) {
+                View::FlashMsgError(join("<br/>", array_values($errors)));
+                Page::RedirectToSelf();
+            }
+        }
+
         /**
          * Check
          * @param array<string, mixed> &$data

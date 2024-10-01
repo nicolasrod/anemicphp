@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-// Make this page ONLY respond to HTTP GET requests
-Anemic\Page::CheckValidMethod(["GET"]);
+use Anemic\{Page, Auth, Config};
 
-Anemic\Auth::Logout();
-Anemic\Page::Redirect(Anemic\Config::Get("initial_path", "/"));
+// Make this page ONLY respond to HTTP GET requests
+Page::CheckValidMethod(["GET"]);
+
+Auth::Logout();
+Page::Redirect(Config::Get("initial_path", "/"));
+

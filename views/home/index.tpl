@@ -1,4 +1,4 @@
-<?php use Anemic\View; ?>
+<?php use Anemic\{Auth, View}; ?>
 <?php View::Extends("base") ?>
 
 <?php View::BeginBlock("content") ?>
@@ -14,9 +14,10 @@
             </pre>
         </div>
         <div>
-            <?php if (! Anemic\Auth::IsUserLogged()): ?>
+            <?php if (! Auth::IsUserLogged()): ?>
             <a href="/users/login">Login</a> 
             <?php else: ?>
+            <?= Auth::GetUser()["email"] ?>
             <a href="/users/logout">Logout</a>
             <?php endif; ?>
         </div>
