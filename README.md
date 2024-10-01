@@ -22,7 +22,7 @@ phpstan analyse -l 8 libs pages views
 - [x] Poor's man MVC: maintain old-school folder as router paradigm
 - [x] Framework you can understand in a few minutes of looking at its source code
 - [x] Maintaining magic to a minimum
-- [x] Tabler.IO included
+- [x] [Tabler.IO](https://tabler.io/admin-template) included
 - [x] Database layer included: SQLite3 only (tuned for concurrent access) with separate Auth database and Application database
 - [x] Ability to install and run composer packages. Wanna change the Database layer? The Auth layer? No problem!
 - [x] Quickstart
