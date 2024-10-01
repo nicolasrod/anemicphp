@@ -56,7 +56,6 @@ if (empty($uri) || trim($uri) === "/") {
     }
 }
 
-//
 if (! file_exists($php_file)) {
     Anemic\Page::ErrorNotFound();
 }
