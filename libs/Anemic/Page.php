@@ -18,11 +18,19 @@ namespace Anemic {
          */
         static function Redirect(string $url, bool $exits = true): void
         {
-            header("Location: {$url}");
+            header("Location: {$url}", true, 303);
 
             if ($exits) {
                 exit;
             }
+        }
+
+        static function RedirectToSelf(): void
+        {
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ||
+                $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+            header("Location: {$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}", true, 303);
+            exit;
         }
 
         /**

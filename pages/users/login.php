@@ -11,10 +11,18 @@ if (! Anemic\Page::IsPOST()) {
     return;
 }
 
+$errors = Anemic\Validate::Check($_POST, [
+    "email" => 'required | email | encode',
+    "password" => "required | alphanumeric | range: 12,255"
+]);
+
+if (! empty($errors)) {
+    Anemic\View::FlashMsg(join("<br/>", array_values($errors)), false);
+    Anemic\Page::RedirectToSelf();
+}
+
 $email = $_POST["email"];
 $password = $_POST["password"];
-
-// TODO: Validations
 
 if (! Anemic\Users::Login($email, $password)) {
     Anemic\Page::ErrorUnauthorized();
