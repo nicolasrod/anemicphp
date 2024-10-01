@@ -34,3 +34,5 @@ phpstan analyse -l 8 libs pages views
 - [ ] User Self-signing?
 - [ ] CRUD generator
 - [ ] Documentation
+
+[Quick Start](docs/quickstart.md)
