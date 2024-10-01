@@ -11,8 +11,7 @@ namespace Anemic {
         static function GetId(SQLite3 $db, string $email): int
         {
             $rs = Db::Select($db, "users", ["id"], ["email" => $email]);
-
-            if ($rs !== false) {
+            if (! empty($rs)) {
                 return $rs[0]["id"];
             }
 

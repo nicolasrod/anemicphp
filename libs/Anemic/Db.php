@@ -11,9 +11,9 @@ namespace Anemic {
 
     class Db
     {
-        static ErrorException $last_error;
+        static Exception $last_error;
 
-        static function GetLastError(): ErrorException
+        static function GetLastError(): Exception
         {
             return static::$last_error;
         }
