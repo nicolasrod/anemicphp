@@ -25,7 +25,7 @@ phpstan analyse -l 8 libs pages views
 - [x] Tabler.IO included
 - [x] Database layer included: SQLite3 only (tuned for concurrent access) with separate Auth database and Application database
 - [x] Ability to install and run composer packages. Wanna change the Database layer? The Auth layer? No problem!
-- [ ] Quickstart
+- [x] Quickstart
 - [x] Form Validations
 - [ ] Security Features
 - [ ] Deployment guides
@@ -33,3 +33,4 @@ phpstan analyse -l 8 libs pages views
 - [ ] CRUD UI for Users and Roles
 - [ ] User Self-signing?
 - [ ] CRUD generator
+- [ ] Documentation
