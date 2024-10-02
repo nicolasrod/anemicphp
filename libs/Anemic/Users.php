@@ -6,8 +6,20 @@ namespace Anemic {
 
     use SQLite3;
 
+    // TODO: Refactor Users and Roles to make it cleaner. It's becoming a mess
     class Users
     {
+
+        static function List(): array
+        {
+            $data = [];
+            Db::RunInTx(function ($db) use (&$data) {
+                $data = Db::Select($db, "users");
+            }, Config::Get("auth_database"));
+
+            return $data;
+        }
+
         static function GetId(SQLite3 $db, string $email): int
         {
             $rs = Db::Select($db, "users", ["id"], ["email" => $email]);
@@ -64,6 +76,18 @@ namespace Anemic {
             }, Config::Get("auth_database"));
 
             return $is_ok;
+        }
+
+        static function GetRoles(int $id): array
+        {
+            $data = [];
+            Db::RunInTx(function (SQLite3 $db) use ($id, &$data) {
+                $data = array_map(function ($it) {
+                    return $it["name"];
+                }, Db::Select($db, "roles", ["name"], ["id_user" => $id]));
+            }, Config::Get("auth_database"));
+
+            return $data;
         }
     }
 }

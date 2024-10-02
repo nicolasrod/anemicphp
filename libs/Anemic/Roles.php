@@ -70,6 +70,35 @@ namespace Anemic {
             return Roles::Revoke($db, $user["id"], $rolename);
         }
 
+        static function RequireRoleLogged(string $rolename): void
+        {
+            $user = Auth::GetUser();
+            if (empty($user)) {
+                Page::ErrorUnauthorized();
+            }
+
+            Db::RunInTx(function (SQLite3 $db) use ($user, $rolename) {
+                if (! Roles::HasRole($db, $user["id"], $rolename)) {
+                    Page::ErrorUnauthorized();
+                }
+            }, Config::Get("auth_database"));
+        }
+
+        static function GetRolesLogged(): array
+        {
+            $user = Auth::GetUser();
+            if (empty($user)) {
+                return [];
+            }
+
+            $data = [];
+            Db::RunInTx(function (SQLite3 $db) use ($user, &$data) {
+                $data = Db::Select($db, "roles", ["name"], ["id_user" => $user["id"]]);
+            }, Config::Get("auth_database"));
+
+            return $data;
+        }
+
         // runintx
         static function HasRoleLogged(SQLite3 $db, string $rolename): bool
         {
@@ -81,7 +110,7 @@ namespace Anemic {
             return Roles::HasRole($db, $user["id"], $rolename);
         }
 
-        static function HasRole(SQLite3 $db, string $id_user, string $rolename): bool
+        static function HasRole(SQLite3 $db, int $id_user, string $rolename): bool
         {
             $rs = Db::Select($db, "roles", ["id_user"], [
                 "id_user" => $id_user,

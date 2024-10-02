@@ -13,14 +13,6 @@
     /_/  |_/_/ /_/\___/_/ /_/ /_/_/\___/_/   /_/ /_/_/      
             </pre>
         </div>
-        <div>
-            <?php if (! Auth::IsUserLogged()): ?>
-            <a href="/users/login">Login</a> 
-            <?php else: ?>
-            <?= Auth::GetUser()["email"] ?>
-            <a href="/users/logout">Logout</a>
-            <?php endif; ?>
-        </div>
     </div>
 </div>
 <?php View::EndBlock() ?>

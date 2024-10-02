@@ -77,7 +77,6 @@ namespace Anemic {
 
             $sql = "INSERT INTO {$table} ({$tmp_fields}) VALUES ({$tmp_params});";
 
-            var_dump($sql);
             $stmt = $db->prepare($sql);
             if ($stmt === false) {
                 return false;

@@ -3,17 +3,6 @@
 declare(strict_types=1);
 
 namespace Anemic {
-
-    /**
-     * Contents for encoding
-     */
-    enum EncodeCtx
-    {
-        case HTML;
-        case URL;
-        case RAW;
-    }
-
     /**
      * Minimal master layout view implementation
      * */
@@ -99,9 +88,9 @@ namespace Anemic {
          *
          * @return string
          */
-        static public function GetStr(string $name, string $def = "", EncodeCtx $ctx = EncodeCtx::HTML): string
+        static public function GetStr(string $name, string $def = ""): string
         {
-            return static::Encode(static::$vars[$name] ?? $def, $ctx);
+            return static::AsHTML(static::$vars[$name] ?? $def);
         }
 
         static public function GetVar(string $name, mixed $def = []): mixed
@@ -116,16 +105,14 @@ namespace Anemic {
          *
          * @return string
          */
-        static public function Encode(string $val, EncodeCtx $ctx): string
+        static public function AsHTML(string $val): string
         {
-            switch ($ctx) {
-                case EncodeCtx::HTML:
-                    return htmlentities($val, ENT_QUOTES | ENT_IGNORE | ENT_HTML5, "UTF-8", false);
-                case EncodeCtx::URL:
-                    return urlencode($val);
-                default:
-                    return $val;
-            }
+            return htmlentities($val, ENT_QUOTES | ENT_IGNORE | ENT_HTML5, "UTF-8", false);
+        }
+
+        static public function AsURL(string $val): string
+        {
+            return urlencode($val);
         }
 
         /**

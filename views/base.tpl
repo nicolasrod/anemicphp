@@ -1,4 +1,4 @@
-<?php use Anemic\View; ?>
+<?php use Anemic\{Auth, View} ?>
 </body>
 </html>
 
@@ -39,7 +39,68 @@
 
   <body  class=" d-flex flex-column">
     <script src="/dist/js/demo-theme.min.js?1692870487"></script>
-    
+ 
+ <div class="page">
+    <header class="navbar navbar-expand-md d-print-none">
+        <div class="container-xl">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+            <?= View::GetStr("title") ?>
+          </div>
+          <div class="navbar-nav flex-row order-md-last">
+            <div class="nav-item d-none d-md-flex me-3">
+              <div class="btn-list">
+              </div>
+            </div>
+            <div class="d-none d-md-flex">
+            </div>
+            <?php 
+              $user = Auth::GetUser();
+              $user_id = $user["id"] ?? -1;
+              $current_user = $user["email"] ?? 'Anonymous'; 
+            ?>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                <div class="d-none d-xl-block ps-2">
+                <div><?= View::AsHTML($current_user) ?></div>
+                  <div class="mt-1 small text-secondary"></div>
+                </div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <?php foreach (View::GetVar("user_menu") as $item): ?>
+              <?php
+                $url = $item["url"];
+                $name = $item["item"];
+                $when = $item["when"] ?: '';
+
+                if (is_callable($when) and ! $when($user_id, $current_user)) {
+                  continue;
+                }
+                ?>
+                <a href="<?= $url ?>" class="dropdown-item"><?= View::AsHTML($name) ?></a>
+              <?php endforeach; ?>
+              
+              <?php if ($current_user === "Anonymous"): ?>
+                <a href="/users/login" class="dropdown-item">Log In</a>
+              <?php else: ?>
+                <a href="/users/logout" class="dropdown-item">Logout</a>
+              <?php endif; ?>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </header>
+     </header>
+     
+
+   <div class="page-wrapper">
+       <div class="page-body">
+          <div class="container-xl my-auto">
+   
     <?php $error = View::GetFlasgMsg() ?>
     <?php if (!empty($error)): ?>
       <div class="alert alert-<?= $error['type'] ?>" role="alert">
@@ -48,6 +109,11 @@
     <?php endif; ?>
     
     <?= View::GetBlock("content") ?>
+
+</div>
+</div>
+</div>
+</div>
 
     <script src="/dist/js/tabler.min.js?1692870487" defer></script>
     <script src="/dist/js/demo.min.js?1692870487" defer></script>

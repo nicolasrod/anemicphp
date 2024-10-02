@@ -6,16 +6,18 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Any error in PHP, we throw it as an Exception
-set_error_handler(function ($num, $str, $file, $line, $context = null) {
-    echo "$str - $num - $file - $line - $context";
-    throw new ErrorException($str, 0, $num, $file, $line);
-});
-
 use Anemic\{Config, Lang, Str, Page, View};
 
 // App configuration
 Config::$config_file = __DIR__ . "/config.ini";
+
+// Any error in PHP, we throw it as an Exception
+set_error_handler(function ($num, $str, $file, $line, $context = null) {
+    if (Config::Get("production") === "0") {
+        echo ">> ERROR: $str, $num - $file - $line - $context";
+    }
+    throw new ErrorException($str, 0, $num, $file, $line);
+});
 
 // Setting default charset as UTF8
 $charset = Config::Get("charset", "UTF-8");

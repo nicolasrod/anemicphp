@@ -41,20 +41,19 @@ namespace Anemic {
             $_SESSION[Config::Get("username_session")] = $info;
         }
 
-         /**
+        /**
          * Get information about the current user in session
          *
          * @return array<string, mixed> id and email of the current logged in user
          */
         static function GetUser(): array
         {
-            return $_SESSION[Config::Get("username_session")];
+            return $_SESSION[Config::Get("username_session")] ?: [];
         }
 
         static function Logout(): void
         {
             $_SESSION[Config::Get("username_session")] = "";
         }
-      
     }
 }
