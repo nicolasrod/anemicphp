@@ -13,6 +13,7 @@ namespace Anemic {
         {
             if (! empty($errors)) {
                 View::FlashMsgError(join("<br/>", array_values($errors)));
+                Page::PushState();
                 Page::RedirectToSelf($qs);
             }
         }

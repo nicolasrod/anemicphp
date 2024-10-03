@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Anemic\{Page, Validate, Users, View};
 
 Page::CheckValidMethod(["POST", "GET"]);
+Page::PopState();
 
 if (Page::IsPOST()) {
     $errors = Validate::Check($_POST, [
@@ -13,13 +14,9 @@ if (Page::IsPOST()) {
         "lastname" => "required | alpha | range:3,255"
     ]);
 
-    Validate::RedirectOnError($errors, Page::QS("id", $_POST['id']));
+    Validate::RedirectOnError($errors);
 
-    $id = (int) $_POST["id"];
-    $firstname = $_POST["firstname"];
-    $lastname = $_POST["lastname"];
-
-    if (! Users::Update($id, $firstname, $lastname)) {
+    if (! Users::Update((int) $_POST["id"], $_POST["firstname"], $_POST["lastname"])) {
         View::FlashMsgError("Error updating user");
     } else {
         View::FlashMsgGood("User updated!");

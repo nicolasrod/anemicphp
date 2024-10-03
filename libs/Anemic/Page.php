@@ -44,6 +44,30 @@ namespace Anemic {
             }
         }
 
+        static function PushState(): void
+        {
+            $_SESSION["_savedstate_post"] = $_POST;
+            $_SESSION["_savedstate_get"] = $_GET;
+            var_dump($_SESSION["_savedstate_get"]);
+            var_dump($_SESSION["_savedstate_post"]);
+        }
+
+        static function PopState(): void
+        {
+            $r = $_SESSION["_savedstate_post"] ?? [];
+            array_map(function ($key) use ($r) {
+                $_POST[$key] = $r[$key];
+            }, array_keys($r));
+
+            $r = $_SESSION["_savedstate_get"] ?? [];
+            array_map(function ($key) use ($r) {
+                $_POST[$key] = $r[$key];
+            }, array_keys($r));
+
+            unset($_SESSION["_savedstate_post"]);
+            unset($_SESSION["_savedstate_get"]);
+        }
+
         static function Self(string $qs = ""): string
         {
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ||

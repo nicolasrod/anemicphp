@@ -1,6 +1,6 @@
 <?php
 
-use Anemic\{View, Users} ?>
+use Anemic\{View, Page} ?>
 <?php View::Extends("base") ?>
 
 <?php View::BeginBlock("content") ?>
@@ -8,7 +8,7 @@ use Anemic\{View, Users} ?>
     <div class="card card-md">
         <div class="card-body">
             <h2 class="h2 text-center mb-4">Edit User</h2>
-            <form action="/users/edit" method="POST" autocomplete="off" novalidate>
+            <form action="<?= Page::Self() ?>" method="POST" autocomplete="off" novalidate>
                 <input type="hidden" name="id" value="<?= View::GetStr("id") ?>" />
                 <?php $user = View::GetVar("user") ?>
                 <div class="mb-3">

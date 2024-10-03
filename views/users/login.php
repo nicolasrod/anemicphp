@@ -1,4 +1,6 @@
-<?php use Anemic\View; ?>
+<?php
+
+use Anemic\View; ?>
 <?php View::Extends("base") ?>
 
 <?php View::BeginBlock("content") ?>
