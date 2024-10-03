@@ -90,7 +90,7 @@ namespace Anemic {
          */
         static public function GetStr(string $name, string $def = ""): string
         {
-            return static::AsHTML(static::$vars[$name] ?? $def);
+            return static::AsHTML((string)(static::$vars[$name] ?? $def));
         }
 
         static public function GetVar(string $name, mixed $def = []): mixed

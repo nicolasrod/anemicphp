@@ -43,6 +43,8 @@ $server_folder = Config::Get("server_folder");
 $uri = ($_SERVER['REQUEST_URI'] ?? '');
 
 if (! empty($uri)) {
+    $uri = Str::GetTo($uri, "?");
+
     if (Str::HasPrefix($uri, $server_folder)) {
         $uri = Str::RemovePrefix($uri, $server_folder);
     }

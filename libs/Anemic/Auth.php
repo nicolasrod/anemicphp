@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 namespace Anemic {
+    use SQLite3;
+
     class Auth
     {
         static function CheckBasic(string $domain, string $user, string $password): void
@@ -27,6 +29,19 @@ namespace Anemic {
         static function IsUserLogged(): bool
         {
             return ! empty($_SESSION[Config::Get("username_session")]);
+        }
+
+
+        static function RequireRole(string $rolename): void
+        {
+            $user = Auth::GetUser();
+            if (empty($user)) {
+                Page::ErrorUnauthorized();
+            }
+
+            if (! Users::HasRole($user["id"], $rolename)) {
+                Page::ErrorUnauthorized();
+            }
         }
 
         /**

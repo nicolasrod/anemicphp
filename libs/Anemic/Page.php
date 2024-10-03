@@ -8,6 +8,25 @@ namespace Anemic {
      */
     class Page
     {
+        static function Trace(string $msg): void
+        {
+            file_put_contents("trace.log", $msg . "\n", FILE_APPEND | LOCK_EX);
+        }
+
+        static function TraceVar(mixed $v): void
+        {
+            file_put_contents("trace.log", var_export($v, true) . "\n", FILE_APPEND | LOCK_EX);
+        }
+
+        static function QS(...$items): string
+        {
+            $s = "?";
+            for ($i = 0; $i < count($items); $i += 2) {
+                $s .= $items[$i] . "=" . $items[$i + 1] . "&";
+            }
+            return $s;
+        }
+
         /**
          * Redirect to another URL and finish execution
          * 
@@ -25,11 +44,11 @@ namespace Anemic {
             }
         }
 
-        static function RedirectToSelf(): void
+        static function RedirectToSelf(string $qs = ""): void
         {
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ||
                 $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
-            header("Location: {$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}", true, 303);
+            header("Location: {$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}?{$qs}", true, 303);
             exit;
         }
 

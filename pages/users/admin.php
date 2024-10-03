@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Anemic\{View, Users, Roles};
+use Anemic\{View, Users, Auth};
 
-Roles::RequireRoleLogged("admin");
+Auth::RequireRole("admin");
 
 View::Render("users.admin", [
     "title" => "User Administration",

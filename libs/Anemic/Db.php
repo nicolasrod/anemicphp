@@ -162,6 +162,32 @@ namespace Anemic {
             return Db::GetRS($stmt->execute());
         }
 
+        static function SelectFirst(SQLite3 $db, string $table, array $fields = [], array $where = []): array
+        {
+            $tmp_fields = join(", ", $fields) ?: "*";
+            $tmp_where = Db::_renderFields($where, fn($k) => "{$k} = :$k", " AND ");
+            if (!empty($tmp_where)) {
+                $tmp_where = " WHERE {$tmp_where}";
+            }
+
+            $sql = "SELECT {$tmp_fields} FROM {$table} {$tmp_where}";
+            $stmt = $db->prepare($sql);
+            if ($stmt === false) {
+                return [];
+            }
+
+            foreach ($where as $k => $v) {
+                $stmt->bindValue(":{$k}", $v);
+            }
+
+            $rs = Db::GetRS($stmt->execute());
+            if (empty($rs)) {
+                return [];
+            }
+
+            return $rs[0];
+        }
+
         /**
          * @return array<array<string, mixed>>
          */

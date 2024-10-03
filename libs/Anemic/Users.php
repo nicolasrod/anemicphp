@@ -6,7 +6,6 @@ namespace Anemic {
 
     use SQLite3;
 
-    // TODO: Refactor Users and Roles to make it cleaner. It's becoming a mess
     class Users
     {
 
@@ -20,40 +19,55 @@ namespace Anemic {
             return $data;
         }
 
-        static function GetId(SQLite3 $db, string $email): int
+        static function Get(int $id): array
         {
-            $rs = Db::Select($db, "users", ["id"], ["email" => $email]);
-            if (! empty($rs)) {
-                return $rs[0]["id"];
-            }
+            $item = [];
+            Db::RunInTx(function (SQLite3 $db) use ($id, &$item) {
+                $item = Db::SelectFirst($db, "users", [], ["id" => $id]);
+            }, Config::Get("auth_database"));
 
-            return -1;
+            return $item;
         }
 
-        static function Add(SQLite3 $db, string $email, string $password, string $firstname, string $lastname): bool
+        static function GetId(string $email): int
         {
-            return Db::Insert($db, "users", [
-                "email" => $email,
-                "firstname" => $firstname,
-                "lastname" => $lastname,
-                "password_hash" => password_hash($password, PASSWORD_DEFAULT)
-            ]);
+            $id = -1;
+            Db::RunInTx(function (SQLite3 $db) use ($email, &$id) {
+                $id = Db::SelectFirst($db, "users", ["id"], ["email" => $email])["id"] ?? -1;
+            }, Config::Get("auth_database"));
+
+            return $id;
         }
 
-        static function Update(SQLite3 $db, string $email, string $password, string $firstname, string $lastname): bool
+        static function Add(string $email, string $password, string $firstname, string $lastname): bool
         {
-            return Db::Update($db, "users", [
-                "firstname" => $firstname,
-                "lastname" => $lastname,
-                "password_hash" => password_hash($password, PASSWORD_DEFAULT)
-            ], [
-                "email" => $email,
-            ]);
+            return Db::RunInTx(function (SQLite3 $db) use ($email, $password, $firstname, $lastname) {
+                Db::Insert($db, "users", [
+                    "email" => $email,
+                    "firstname" => $firstname,
+                    "lastname" => $lastname,
+                    "password_hash" => password_hash($password, PASSWORD_DEFAULT)
+                ]);
+            }, Config::Get("auth_database"));
         }
 
-        static function Delete(SQLite3 $db, string $email): bool
+        static function Update(int $id, string $firstname, string $lastname): bool
         {
-            return Db::Delete($db, "users", ["email" => $email]);
+            return Db::RunInTx(function (SQLite3 $db) use ($id, $firstname, $lastname) {
+                Db::Update($db, "users", [
+                    "firstname" => $firstname,
+                    "lastname" => $lastname,
+                ], [
+                    "id" => $id,
+                ]);
+            }, Config::Get("auth_database"));
+        }
+
+        static function Delete(string $email): bool
+        {
+            return Db::RunInTx(function (SQLite3 $db) use ($email) {
+                Db::Delete($db, "users", ["email" => $email]);
+            }, Config::Get("auth_database"));
         }
 
         static function Login(string $email, string $password): bool
@@ -78,6 +92,10 @@ namespace Anemic {
             return $is_ok;
         }
 
+        // ===============================================================================
+        // Roles
+        // ===============================================================================
+
         static function GetRoles(int $id): array
         {
             $data = [];
@@ -88,6 +106,42 @@ namespace Anemic {
             }, Config::Get("auth_database"));
 
             return $data;
+        }
+
+        static function HasRole(int $id_user, string $rolename): bool
+        {
+            $has_role = false;
+
+            Db::RunInTx(function (SQLite3 $db) use ($id_user, $rolename, &$has_role) {
+                $rs = Db::Select($db, "roles", ["id_user"], [
+                    "id_user" => $id_user,
+                    "name" => $rolename
+                ]);
+
+                $has_role =  (count($rs) > 0);
+            }, Config::Get("auth_database"));
+
+            return $has_role;
+        }
+
+        static function GrantRole(int $id_user, string $rolename): bool
+        {
+            return Db::RunInTx(function (SQLite3 $db) use ($id_user, $rolename) {
+                return Db::Insert($db, "roles", [
+                    "id_user" => $id_user,
+                    "name" => $rolename
+                ]);
+            }, Config::Get("auth_database"));
+        }
+
+        static function RevokeRole(int $id_user, string $rolename): bool
+        {
+            return Db::RunInTx(function (SQLite3 $db) use ($id_user, $rolename) {
+                return Db::Delete($db, "roles", [
+                    "id_user" => $id_user,
+                    "name" => $rolename
+                ]);
+            }, Config::Get("auth_database"));
         }
     }
 }

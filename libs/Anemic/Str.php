@@ -115,12 +115,15 @@ namespace Anemic {
 
     static function GetTo(string $v, string $it): string
     {
-      return mb_strstr($v, $it, true, static::$charset) ?: "";
+      $r = mb_strstr($v, $it, true, static::$charset) ?: "";
+
+      return ($r == false) ? $v : $r;
     }
 
     static function GetFrom(string $v, string $it): string
     {
-      return mb_strstr($v, $it, false, static::$charset) ?: "";
+      $r = mb_strstr($v, $it, false, static::$charset) ?: "";
+      return ($r == false) ? $v : $r;
     }
   }
 }

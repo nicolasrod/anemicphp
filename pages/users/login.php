@@ -14,7 +14,7 @@ if (! Page::IsPOST()) {
 // Validate POST fields
 $errors = Validate::Check($_POST, [
     "email" => 'required | email | encode',
-    "password" => "required | alphanumeric | range: 8,255"
+    "password" => "required | alpha | range: 8,255"
 ]);
 
 Validate::RedirectOnError($errors);

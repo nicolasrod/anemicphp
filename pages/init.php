@@ -26,9 +26,9 @@ $ok = Db::RunInTx(function ($db) {
         create unique index roles_users on roles(id_user, name);
     SQL);
 
-    Users::Add($db, "admin@local.host", "admin1234", "Local", "Administrator");
-    Users::Add($db, "user@local.host", "user1234", "Local", "User");
-    Roles::Grant($db, "admin@local.host", "admin");
+    Users::Add("admin@local.host", "admin1234", "Local", "Administrator");
+    Users::Add("user@local.host", "user1234", "Local", "User");
+    Users::GrantRole(Users::GetId("admin@local.host"), "admin");
 }, Config::Get("auth_database"));
 
 if (! $ok) {

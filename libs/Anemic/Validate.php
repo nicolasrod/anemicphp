@@ -9,11 +9,11 @@ namespace Anemic {
         /**
          * @param array<string, string> $errors
          */
-        static function RedirectOnError(array $errors): void
+        static function RedirectOnError(array $errors, string $qs = ""): void
         {
             if (! empty($errors)) {
                 View::FlashMsgError(join("<br/>", array_values($errors)));
-                Page::RedirectToSelf();
+                Page::RedirectToSelf($qs);
             }
         }
 
