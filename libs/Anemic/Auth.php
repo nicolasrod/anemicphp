@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Anemic {
+
     use SQLite3;
 
     class Auth
@@ -63,12 +64,12 @@ namespace Anemic {
          */
         static function GetUser(): array
         {
-            return $_SESSION[Config::Get("username_session")] ?: [];
+            return $_SESSION[Config::Get("username_session")] ?? [];
         }
 
         static function Logout(): void
         {
-            $_SESSION[Config::Get("username_session")] = "";
+            unset($_SESSION[Config::Get("username_session")]);
         }
     }
 }

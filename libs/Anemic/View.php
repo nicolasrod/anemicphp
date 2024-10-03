@@ -149,7 +149,7 @@ namespace Anemic {
         static function _renderFile(string $fname): string
         {
             $tpl = Str::Replace(".", DIRECTORY_SEPARATOR, $fname);
-            $path = static::$basepath . DIRECTORY_SEPARATOR . $tpl . ".tpl";
+            $path = static::$basepath . DIRECTORY_SEPARATOR . $tpl . ".php";
 
             assert(file_exists($path));
 

@@ -11,6 +11,7 @@ namespace Anemic {
     class Db
     {
         static Exception $last_error;
+        static ?SQLite3 $current_db = null;
 
         static function GetLastError(): Exception
         {
@@ -23,31 +24,48 @@ namespace Anemic {
                 $dbname = Config::Get("app_database");
             }
 
-            $db = new SQLite3($dbname);
-            $db->exec(<<<SQL
-            PRAGMA busy_timeout=5000;
-            PRAGMA foreign_keys=ON;
-            PRAGMA journal_mode=WAL;
-            PRAGMA synchronous=NORMAL;
-            PRAGMA mmap_size=134217728;
-            PRAGMA journal_size_limit=67108864;
-            PRAGMA cache_size=2000;
-            SQL);
+            $init = true;
+
+            if (! is_null(static::$current_db)) {
+                $db = static::$current_db;
+                $init = false;
+            } else {
+                $db = new SQLite3($dbname);
+                static::$current_db = $db;
+
+                $db->exec(<<<SQL
+                    PRAGMA busy_timeout=5000;
+                    PRAGMA foreign_keys=ON;
+                    PRAGMA journal_mode=WAL;
+                    PRAGMA synchronous=NORMAL;
+                    PRAGMA mmap_size=134217728;
+                    PRAGMA journal_size_limit=67108864;
+                    PRAGMA cache_size=2000;
+                    SQL);
+            }
 
             try {
-                $db->exec("BEGIN TRANSACTION");
+                if ($init) {
+                    $db->exec("BEGIN TRANSACTION");
+                }
 
                 $cancel = $fn($db);
                 if ($cancel === false) {
                     throw new Exception();
                 }
 
-                $db->exec("COMMIT TRANSACTION");
-                $db->close();
-            } catch (\Exception $e) {
-                $db->exec("ROLLBACK TRANSACTION");
-                $db->close();
+                if ($init) {
+                    $db->exec("COMMIT TRANSACTION");
+                    $db->close();
 
+                    static::$current_db = null;
+                }
+            } catch (\Exception $e) {
+                if ($init) {
+                    $db->exec("ROLLBACK TRANSACTION");
+                    $db->close();
+                    static::$current_db = null;
+                }
                 static::$last_error = $e;
                 return false;
             }

@@ -17,6 +17,7 @@ A few things it tries to achieve:
 ```
 phpstan analyse -l 8 libs pages views
 ```
+
 - [x] Views are PHP scripts with some logic to have output encoding and master layout pages
 - [x] Minimal glue to make PHP bearable, without redefining things already OK in PHP
 - [x] Poor's man MVC: maintain old-school folder as router paradigm

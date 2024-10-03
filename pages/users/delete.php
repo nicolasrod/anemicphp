@@ -1,28 +1,26 @@
 <?php
 
-declare(strict_types=1);
-
 use Anemic\{Page, Validate, Users, View};
 
 Page::CheckValidMethod(["POST", "GET"]);
 
 if (Page::IsPOST()) {
+    if ($_POST["submit"] === "0") {
+        Page::Redirect("/users/admin");        
+    }
+
     $errors = Validate::Check($_POST, [
         "id" => 'required',
-        "firstname" => 'required | alpha | range:3,255',
-        "lastname" => "required | alpha | range:3,255"
     ]);
 
     Validate::RedirectOnError($errors, Page::QS("id", $_POST['id']));
 
     $id = (int) $_POST["id"];
-    $firstname = $_POST["firstname"];
-    $lastname = $_POST["lastname"];
 
-    if (! Users::Update($id, $firstname, $lastname)) {
-        View::FlashMsgError("Error updating user");
+    if (! Users::Delete($id)) {
+        View::FlashMsgError("Error deleting user");
     } else {
-        View::FlashMsgGood("User updated!");
+        View::FlashMsgGood("User deleted!");
     }
 
     Page::Redirect("/users/admin");
@@ -36,9 +34,9 @@ if (empty($user)) {
     Page::Redirect("/users/admin");
 }
 
-View::Render("users.edit", [
+View::Render("confirm", [
     "id" => $id, 
-    "title" => "Edit User", 
-    "user" => $user
+    "title" => "Delete User?", 
+    "message" => "Do you really want to delete the user {$user['email']}?"
 ]);
 

@@ -63,10 +63,10 @@ namespace Anemic {
             }, Config::Get("auth_database"));
         }
 
-        static function Delete(string $email): bool
+        static function Delete(int $id): bool
         {
-            return Db::RunInTx(function (SQLite3 $db) use ($email) {
-                Db::Delete($db, "users", ["email" => $email]);
+            return Db::RunInTx(function (SQLite3 $db) use ($id) {
+                Db::Delete($db, "users", ["id" => $id]);
             }, Config::Get("auth_database"));
         }
 

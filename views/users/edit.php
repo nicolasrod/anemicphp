@@ -27,5 +27,7 @@ use Anemic\{View, Users} ?>
             </form>
         </div>
     </div>
+
+    <a href="/users/admin">Go Back</a>
 </div>
 <?php View::EndBlock() ?>
