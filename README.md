@@ -31,7 +31,8 @@ phpstan analyse -l 8 libs pages views
 - [ ] Security Features
 - [ ] Deployment guides
 - [ ] FAQs
-- [x] CRUD UI for Users and Roles (in progress...)
+- [x] CRUD UI for Users
+- [ ] CRUD UI for Roles
 - [ ] User Self-signing?
 - [ ] CRUD generator
 - [ ] Documentation
